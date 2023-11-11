@@ -11,6 +11,6 @@ router.get('/', getProducts)
 // POST
 router.post('/', createProduct)
 
-router.post('/:category', getProductsByCategory)
+router.get('/:category', getProductsByCategory)
 
 module.exports = router
