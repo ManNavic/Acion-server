@@ -1,9 +1,0 @@
-POST http://localhost:4000/test
-Content-Type: application/json
-
-{
-    "title": "hi",
-    "description": "hu",
-    "imageUrl": "hi"
-
-}
