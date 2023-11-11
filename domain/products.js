@@ -13,7 +13,8 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     // Destructure the required properties from req.body
-    const { title, description, dimensions, price, stock, imageUrl } = req.body
+    const { title, description, dimensions, price, stock, imageUrl, category } =
+      req.body
 
     // Check if any required property is missing
     if (
@@ -50,7 +51,8 @@ const createProduct = async (req, res) => {
       },
       price,
       stock,
-      imageUrl
+      imageUrl,
+      category
     })
 
     // Save the new product to the database
@@ -64,5 +66,27 @@ const createProduct = async (req, res) => {
     res.status(400).json({ message: error.message })
   }
 }
+const getProductsByCategory = async (req, res) => {
+  try {
+    // Assuming the category is provided in the request query (e.g., /products?category=electronics)
+    const category = req.query.category
 
-module.exports = { getProducts, createProduct }
+    if (!category) {
+      return res.status(400).json({ message: 'Category parameter is missing' })
+    }
+
+    const products = await Product.find({ category })
+
+    if (!products || products.length === 0) {
+      return res
+        .status(404)
+        .json({ message: `Products not found for category: ${category}` })
+    }
+
+    return res.json(products)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+module.exports = { getProducts, createProduct, getProductsByCategory }
