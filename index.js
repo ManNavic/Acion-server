@@ -1,12 +1,12 @@
 require('dotenv').config()
-const bodyParser = require('body-parser')
+// const bodyParser = require('body-parser')
 const express = require('express')
 const mongoose = require('mongoose')
 const Book = require('./models/books')
 
 const app = express()
 const PORT = process.env.PORT || 4000
-app.use(bodyParser.json());
+// app.use(bodyParser.json())
 mongoose.set('strictQuery', false)
 const connectDB = async () => {
   try {

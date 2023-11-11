@@ -70,7 +70,7 @@ const getProductsByCategory = async (req, res) => {
   try {
     // Assuming the category is provided in the request query (e.g., /products?category=electronics)
     const category = req.query.category
-
+    console.log(category)
     if (!category) {
       return res.status(400).json({ message: 'Category parameter is missing' })
     }
