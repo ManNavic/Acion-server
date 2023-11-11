@@ -1,12 +1,12 @@
 require('dotenv').config()
-
+const bodyParser = require('body-parser')
 const express = require('express')
 const mongoose = require('mongoose')
 const Book = require('./models/books')
 
 const app = express()
 const PORT = process.env.PORT || 4000
-
+app.use(bodyParser.json());
 mongoose.set('strictQuery', false)
 const connectDB = async () => {
   try {
@@ -35,6 +35,11 @@ app.use((req, res, next) => {
   next()
 })
 // Routes go here
+// NEW ROUTES TO TEST
+const productsRouter = require('./routes/products')
+app.use('/products', productsRouter)
+
+///
 app.get('/', (req, res) => {
   try {
     const feed = Book.find()
@@ -79,6 +84,6 @@ app.get('/add-note', async (req, res) => {
 // Connect to the database before listening
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log('listening for requests')
+    console.log(`listening for requests on ${PORT}`)
   })
 })
