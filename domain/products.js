@@ -88,5 +88,34 @@ const getProductsByCategory = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+const getProductById = async (req, res) => {
+  try {
+    // Assuming the ID is provided as a route parameter (e.g., /products/:id)
+    const id = req.params.id
 
-module.exports = { getProducts, createProduct, getProductsByCategory }
+    console.log(id)
+
+    if (!id) {
+      return res.status(400).json({ message: 'ID parameter is missing' })
+    }
+
+    const product = await Product.findById(id)
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `Product not found for ID: ${id}` })
+    }
+
+    return res.json(product)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+module.exports = {
+  getProducts,
+  createProduct,
+  getProductsByCategory,
+  getProductById
+}

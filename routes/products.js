@@ -1,7 +1,8 @@
 const {
   getProducts,
   createProduct,
-  getProductsByCategory
+  getProductsByCategory,
+  getProductById
 } = require('../domain/products')
 const express = require('express')
 const router = express.Router()
@@ -12,5 +13,7 @@ router.get('/', getProducts)
 router.post('/', createProduct)
 
 router.get('/category', getProductsByCategory)
+
+router.get('/:id', getProductById)
 
 module.exports = router
