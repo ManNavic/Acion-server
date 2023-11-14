@@ -1,12 +1,11 @@
 require('dotenv').config()
-// const bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const express = require('express')
 const mongoose = require('mongoose')
-const Book = require('./models/books')
 
 const app = express()
 const PORT = process.env.PORT || 4000
-// app.use(bodyParser.json())
+app.use(bodyParser.json())
 mongoose.set('strictQuery', false)
 const connectDB = async () => {
   try {
@@ -39,47 +38,9 @@ app.use((req, res, next) => {
 const productsRouter = require('./routes/products')
 app.use('/products', productsRouter)
 
+const registerRouter = require('./routes/register')
+app.use('/register', registerRouter)
 ///
-app.get('/', (req, res) => {
-  try {
-    const feed = Book.find()
-    if (!feed) {
-      return res.status(404).json({ message: 'Feed not found' })
-    } else {
-      return res.json(feed)
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message })
-  }
-})
-
-app.get('/books', async (req, res) => {
-  const book = await Book.find()
-
-  if (book) {
-    res.json(book)
-  } else {
-    res.send('Something went wrong.')
-  }
-})
-
-app.get('/add-note', async (req, res) => {
-  try {
-    await Book.insertMany([
-      {
-        title: 'Sons Of Anarchy',
-        body: 'Body text goes here...'
-      },
-      {
-        title: 'Games of Thrones',
-        body: 'Body text goes here...'
-      }
-    ])
-    res.json({ Data: 'Added' })
-  } catch (error) {
-    console.log('err', +error)
-  }
-})
 
 // Connect to the database before listening
 connectDB().then(() => {

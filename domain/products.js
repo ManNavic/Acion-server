@@ -16,39 +16,12 @@ const createProduct = async (req, res) => {
     const { title, description, dimensions, price, stock, imageUrl, category } =
       req.body
 
-    // Check if any required property is missing
-    if (
-      !title ||
-      !description ||
-      !dimensions ||
-      !price ||
-      !stock ||
-      !imageUrl
-    ) {
-      return res.status(400).json({ message: 'Invalid request body' })
-    }
-
-    // Check if dimensions object is present and has height, width, and depth properties
-    if (
-      !dimensions ||
-      typeof dimensions !== 'object' ||
-      !dimensions.height ||
-      !dimensions.width ||
-      !dimensions.depth
-    ) {
-      return res
-        .status(400)
-        .json({ message: 'Invalid dimensions in request body' })
-    }
     // Create a new Product instance
+
     const product = new Product({
       title,
       description,
-      dimensions: {
-        height: dimensions.height,
-        width: dimensions.width,
-        depth: dimensions.depth
-      },
+      dimensions: dimensions || {}, // Set default empty object if dimensions is undefined
       price,
       stock,
       imageUrl,
