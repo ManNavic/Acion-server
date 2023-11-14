@@ -40,6 +40,9 @@ app.use('/products', productsRouter)
 
 const registerRouter = require('./routes/register')
 app.use('/register', registerRouter)
+
+const loginRouter = require('./routes/login')
+app.use('/login', loginRouter)
 ///
 
 // Connect to the database before listening
