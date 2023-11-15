@@ -7,7 +7,7 @@ const saltRounds = 10
 
 const createUser = async (req, res) => {
   console.log(req.body)
-  const { email, password } = req.body
+  const { email, password, firstName, lastName } = req.body
   const validationErrors = passwordValidation(password)
   //   const validatePostCod = postCodeValidation(postCode)
   if (!emailValidation(email)) {
@@ -20,12 +20,12 @@ const createUser = async (req, res) => {
       errors: validationErrors
     })
   }
-  //   if (!firstName) {
-  //     return res.status(400).json({ errors: ['Please enter your first name'] })
-  //   }
-  //   if (!lastName) {
-  //     return res.status(400).json({ errors: ['Please enter your last name'] })
-  //   }
+  if (!firstName) {
+    return res.status(400).json({ errors: ['Please enter your first name'] })
+  }
+  if (!lastName) {
+    return res.status(400).json({ errors: ['Please enter your last name'] })
+  }
   //   if (!street) {
   //     return res.status(400).json({ errors: ['Please enter your street name'] })
   //   }
@@ -56,7 +56,13 @@ const createUser = async (req, res) => {
     const hash = await bcrypt.hash(password, saltRounds)
     const user = new User({
       email,
-      password: hash
+      password: hash,
+      profile: [
+        {
+          firstName,
+          lastName
+        }
+      ]
     })
     delete user.password
     const newUser = await user.save()
