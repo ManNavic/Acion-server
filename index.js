@@ -19,20 +19,20 @@ const connectDB = async () => {
 app.use((req, res, next) => {
   // Set CORS headers
   res.header('Access-Control-Allow-Origin', '*')
-  // Add other headers as needed
-
-  // Allow all HTTP methods
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-
-  // Set the allowed headers for the preflight request
   res.header(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
   )
 
-  // Continue to the next middleware
-  next()
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200)
+  } else {
+    next()
+  }
 })
+
 // Routes go here
 // NEW ROUTES TO TEST
 const productsRouter = require('./routes/products')
