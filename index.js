@@ -19,30 +19,15 @@ const connectDB = async () => {
 const cors = require('cors')
 app.use(cors())
 
-
-// app.use((req, res, next) => {
-//   // Set CORS headers
-//   res.header('Access-Control-Allow-Origin', '*')
-//   // Add other headers as needed
-
-//   // Allow all HTTP methods
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-
-//   // Set the allowed headers for the preflight request
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept'
-//   )
-
-//   // Continue to the next middleware
-//   next()
-// })
 // NEW ROUTES TO TEST
 const productsRouter = require('./routes/products')
 app.use('/products', productsRouter)
 
 const registerRouter = require('./routes/register')
 app.use('/register', registerRouter)
+
+const subscriberRouter = require('./routes/subscriber')
+app.use('/subscriber', subscriberRouter)
 
 const loginRouter = require('./routes/login')
 app.use('/login', loginRouter)
