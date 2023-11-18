@@ -2,7 +2,7 @@ require('dotenv').config()
 const bodyParser = require('body-parser')
 const express = require('express')
 const mongoose = require('mongoose')
-const tokenAuth = require('./utils/tokenAuth')
+const auth = require('./utils/tokenAuth')
 const app = express()
 const PORT = process.env.PORT || 4000
 app.use(bodyParser.json())
@@ -26,14 +26,14 @@ app.use('/products', productsRouter)
 const registerRouter = require('./routes/register')
 app.use('/register', registerRouter)
 
-const subscriberRouter = require('./routes/subscriber')
+const subscriberRouter = require('./routes/subsciber')
 app.use('/subscriber', subscriberRouter)
 
 const loginRouter = require('./routes/login')
 app.use('/login', loginRouter)
 
 const usersRouters = require('./routes/user')
-app.use('/user', tokenAuth, usersRouters)
+app.use('/user', auth, usersRouters)
 ///
 
 connectDB().then(() => {
