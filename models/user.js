@@ -1,6 +1,38 @@
 const mongoose = require('mongoose')
 
-const addressSchema = new mongoose.Schema({
+const billingAddressSchema = new mongoose.Schema({
+  street: {
+    type: String,
+    required: true
+  },
+  houseNumber: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  country: {
+    type: String,
+    required: true
+  },
+  postCode: {
+    type: String,
+    required: true
+  }
+})
+const additionalInfoSchema = new mongoose.Schema({
+  birthday: {
+    type: String,
+    required: true
+  },
+  phoneNumber: {
+    type: String,
+    required: true
+  }
+})
+const shippingAddressSchema = new mongoose.Schema({
   street: {
     type: String,
     required: true
@@ -32,7 +64,9 @@ const profileSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  address: [addressSchema]
+  billingAddress: [billingAddressSchema],
+  shippingAddress: [shippingAddressSchema],
+  additionalInfo: [additionalInfoSchema]
 })
 
 const userSchema = new mongoose.Schema({
