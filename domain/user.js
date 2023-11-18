@@ -3,7 +3,7 @@ const saltRounds = 10
 const bcrypt = require('bcrypt')
 const getUser = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.user.email })
+    const user = await User.find({ email: req.user.email })
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -13,7 +13,9 @@ const getUser = async (req, res) => {
   }
 }
 const updateUser = async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, profile } = req.body
+  const { firstName, lastName, additionalInfo } = profile[0]
+  const { birthday, phoneNumber } = additionalInfo[0]
 
   try {
     const user = await User.findOne({ email: req.user.email })
@@ -22,45 +24,44 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Update user properties
     user.email = email
 
     if (password) {
-      // Only update the password if a new one is provided
       const hash = await bcrypt.hash(password, saltRounds)
       user.password = hash
     }
 
-    // Save the updated user
-    const updatedUser = await user.save()
+    const profiles = user.profile
 
-    // Respond with the updated user
-    res.status(200).json({ message: 'User updated successfully', updatedUser })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-}
-const updateUserProfile = async (req, res) => {
-  const { firstName, lastName } = req.body
-
-  try {
-    const user = await User.findOne({ email: req.user.email })
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+    if (!profiles || profiles.length === 0) {
+      return res.status(404).json({ message: 'Profile not found' })
     }
-    const profile = user.profile[0]
-    // Update user properties
-    profile.firstName = firstName
-    profile.lastName = lastName
 
-    // Save the updated user
+    const userProfile = profiles[0]
+
+    userProfile.firstName = firstName
+    userProfile.lastName = lastName
+
+    // Check and add additional info
+    if (additionalInfo) {
+      const existingInfo = userProfile.additionalInfo[0]
+
+      if (!existingInfo) {
+        const newInfo = {
+          birthday,
+          phoneNumber
+        }
+
+        userProfile.additionalInfo.push(newInfo)
+      } else {
+        // If additional info exists, update it
+        existingInfo.birthday = birthday
+        existingInfo.phoneNumber = phoneNumber
+      }
+    }
+
     const updatedUser = await user.save()
-
-    // Respond with the updated user
-    res
-      .status(200)
-      .json({ message: 'User profile updated successfully', updatedUser })
+    res.status(200).json({ message: 'User updated successfully', updatedUser })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -237,88 +238,13 @@ const updateBillingAddress = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
-const addAdditionalInfo = async (req, res) => {
-  const { birthday, phoneNumber } = req.body
-  try {
-    const user = await User.findOne({ email: req.user.email })
-
-    console.log(user)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    const profile = user.profile[0]
-    const additionalInfo = user.profile[0].additionalInfo[0]
-
-    if (!profile) {
-      return res.status(404).json({ message: 'Profile not found' })
-    }
-    if (additionalInfo) {
-      return res.status(404).json({ message: 'Additional ifno already exist' })
-    }
-
-    const newInfo = {
-      birthday,
-      phoneNumber
-    }
-
-    // Add the new address to the profile
-    profile.additionalInfo.push(newInfo)
-
-    await user.save()
-
-    res
-      .status(201)
-      .json({ message: 'Additional info added successfully', user })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-}
-const updateAdditionalInfo = async (req, res) => {
-  const { birthday, phoneNumber } = req.body
-
-  try {
-    const user = await User.findOne({ email: req.user.email })
-
-    console.log(user)
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    // Assuming you want to update the address in the first profile
-    const profile = user.profile[0]
-    const additionalInfo = user.profile[0].additionalInfo[0]
-
-    if (!profile) {
-      return res.status(404).json({ message: 'Profile not found' })
-    }
-    if (!additionalInfo) {
-      return res.status(404).json({ message: 'Additional info  not found' })
-    }
-
-    // Update the existing address
-    additionalInfo.birthday = birthday
-    additionalInfo.phoneNumber = phoneNumber
-
-    await user.save()
-
-    res
-      .status(200)
-      .json({ message: 'Additional info updated successfully', user })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-}
 
 module.exports = {
   getUser,
   updateUser,
-  updateUserProfile,
   addUserShippingAddress,
   updateShippingAddress,
   addUserBillingAddress,
   updateBillingAddress,
-  deleteUser,
-  addAdditionalInfo,
-  updateAdditionalInfo
+  deleteUser
 }

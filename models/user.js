@@ -69,21 +69,32 @@ const profileSchema = new mongoose.Schema({
   additionalInfo: [additionalInfoSchema]
 })
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      required: true,
+      default: Date.now
+    },
+    profile: [profileSchema]
   },
-  password: {
-    type: String,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  profile: [profileSchema]
-})
+  {
+    timestamps: true,
+    versionKey: false
+  }
+)
 
 module.exports = mongoose.model('User', userSchema)
