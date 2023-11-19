@@ -41,7 +41,6 @@ const updateUserPassword = async (req, res) => {
 
   try {
     const user = await User.findOne({ email: req.user.email })
-console.log(user)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
