@@ -166,20 +166,34 @@ const updateShippingAddress = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.user.email })
 
-    console.log(user)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
 
     // Assuming you want to update the address in the first profile
     const profile = user.profile[0]
-    const address = user.profile[0].shippingAddress[0]
+    const address = profile.shippingAddress[0] // Fix: Use profile.shippingAddress instead of user.profile[0].shippingAddress
 
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' })
     }
+
     if (!address) {
-      return res.status(404).json({ message: 'Shipping address not found' })
+      const newAddress = {
+        street,
+        houseNumber,
+        city,
+        country,
+        postCode
+      }
+
+      // Add the new address to the profile
+      profile.shippingAddress.push(newAddress) // Fix: Use profile.shippingAddress instead of profile.billingAddress
+
+      await user.save()
+      return res
+        .status(200)
+        .json({ message: 'Shipping address added successfully', user })
     }
 
     // Update the existing address
@@ -191,13 +205,14 @@ const updateShippingAddress = async (req, res) => {
 
     await user.save()
 
-    res
+    return res
       .status(200)
       .json({ message: 'Shipping address updated successfully', user })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
+
 const addUserBillingAddress = async (req, res) => {
   const { street, houseNumber, city, country, postCode } = req.body
   try {
@@ -245,20 +260,34 @@ const updateBillingAddress = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.user.email })
 
-    console.log(user)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
 
     // Assuming you want to update the address in the first profile
     const profile = user.profile[0]
-    const address = user.profile[0].billingAddress[0]
+    const address = profile.billingAddress[0] // Fix: Use profile.billingAddress instead of user.profile[0].billingAddress
 
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' })
     }
+
     if (!address) {
-      return res.status(404).json({ message: 'Billing Address not found' })
+      const newAddress = {
+        street,
+        houseNumber,
+        city,
+        country,
+        postCode
+      }
+
+      // Add the new address to the profile
+      profile.billingAddress.push(newAddress)
+
+      await user.save()
+      return res
+        .status(200)
+        .json({ message: 'Billing address added successfully', user })
     }
 
     // Update the existing address
@@ -270,11 +299,11 @@ const updateBillingAddress = async (req, res) => {
 
     await user.save()
 
-    res
+    return res
       .status(200)
       .json({ message: 'Billing address updated successfully', user })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
