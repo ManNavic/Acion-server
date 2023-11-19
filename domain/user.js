@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const { passwordValidation } = require('../utils/passwordValidation')
 const saltRounds = 10
 const bcrypt = require('bcrypt')
 const getUser = async (req, res) => {
@@ -9,7 +10,6 @@ const getUser = async (req, res) => {
     }
     const userDataToSend = {
       email: user.email,
-      password: '',
       profile: [
         {
           firstName: user.profile[0].firstName,
@@ -29,8 +29,30 @@ const getUser = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+const updateUserPassword = async (req, res) => {
+  const { password } = req.body
+  const validationErrors = passwordValidation(password)
+  if (validationErrors.length > 0) {
+    return res.status(400).json({
+      errors: validationErrors
+    })
+  }
+  try {
+    const user = await User.findOne({ email: req.user.email })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    const hash = await bcrypt.hash(password, saltRounds)
+    user.password = hash
+    delete user.password
+    const newUser = await user.save()
+    res.status(201).json(newUser)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
 const updateUser = async (req, res) => {
-  const { email, password, profile } = req.body
+  const { email, profile } = req.body
   const { firstName, lastName, additionalInfo } = profile[0]
   const { birthday, phoneNumber } = additionalInfo[0]
 
@@ -42,11 +64,6 @@ const updateUser = async (req, res) => {
     }
 
     user.email = email
-
-    if (password) {
-      const hash = await bcrypt.hash(password, saltRounds)
-      user.password = hash
-    }
 
     const profiles = user.profile
 
@@ -263,5 +280,6 @@ module.exports = {
   updateShippingAddress,
   addUserBillingAddress,
   updateBillingAddress,
-  deleteUser
+  deleteUser,
+  updateUserPassword
 }

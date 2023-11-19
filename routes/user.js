@@ -5,7 +5,8 @@ const {
   updateBillingAddress,
   addUserShippingAddress,
   updateShippingAddress,
-  updateUser
+  updateUser,
+  updateUserPassword
 } = require('../domain/user')
 const express = require('express')
 const router = express.Router()
@@ -14,6 +15,7 @@ const router = express.Router()
 router.get('/', getUser)
 router.delete('/', deleteUser)
 router.patch('/profile', updateUser)
+router.patch('password', updateUserPassword)
 router.post('/billing', addUserBillingAddress)
 router.patch('/billing', updateBillingAddress)
 router.post('/shipping', addUserShippingAddress)
