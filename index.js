@@ -16,8 +16,6 @@ const connectDB = async () => {
     process.exit(1)
   }
 }
-const cors = require('cors')
-app.use(cors())
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
@@ -28,6 +26,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', true)
   next()
 })
+const cors = require('cors')
+app.use(cors())
 // NEW ROUTES TO TEST
 const productsRouter = require('./routes/products')
 app.use('/products', productsRouter)
