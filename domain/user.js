@@ -15,8 +15,8 @@ const getUser = async (req, res) => {
           lastName: user.profile[0].lastName,
           additionalInfo: [
             {
-              birthday: user.profile[0].additionalInfo.birthday,
-              phoneNumber: user.profile[0].additionalInfo.phoneNumber
+              birthday: user.profile[0].additionalInfo[0].birthday,
+              phoneNumber: user.profile[0].additionalInfo[0].phoneNumber
             }
           ]
         }
