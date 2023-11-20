@@ -11,12 +11,13 @@ const getUser = async (req, res) => {
     const userDataToSend = {
       profile: [
         {
-          firstName: user.profile[0].firstName,
-          lastName: user.profile[0].lastName,
+          firstName: user?.profile?.[0]?.firstName || '',
+          lastName: user?.profile?.[0]?.lastName || '',
           additionalInfo: [
             {
-              birthday: user.profile[0].additionalInfo[0].birthday,
-              phoneNumber: user.profile[0].additionalInfo[0].phoneNumber
+              birthday: user?.profile?.[0]?.additionalInfo?.[0]?.birthday || '',
+              phoneNumber:
+                user?.profile?.[0]?.additionalInfo?.[0]?.phoneNumber || ''
             }
           ]
         }
@@ -87,24 +88,30 @@ const updateUser = async (req, res) => {
 
     const userProfile = profiles[0]
 
+    // Update firstName and lastName
     userProfile.firstName = firstName
     userProfile.lastName = lastName
 
-    // Check and add additional info
+    // Check and add/update additional info
     if (additionalInfo) {
       const existingInfo = userProfile.additionalInfo[0]
 
       if (!existingInfo) {
+        // If additional info doesn't exist, create a new one
         const newInfo = {
-          birthday,
+          birthday: birthday || null, // Set to null if it's an empty string
           phoneNumber
         }
 
         userProfile.additionalInfo.push(newInfo)
       } else {
         // If additional info exists, update it
-        existingInfo.birthday = birthday
-        existingInfo.phoneNumber = phoneNumber
+        if (birthday !== '') {
+          existingInfo.birthday = birthday
+        }
+        if (phoneNumber !== '') {
+          existingInfo.phoneNumber = phoneNumber
+        }
       }
     }
 
