@@ -6,13 +6,15 @@ const {
   addUserShippingAddress,
   updateShippingAddress,
   updateUser,
-  updateUserPassword
+  updateUserPassword,
+  getUserFullData
 } = require('../domain/user')
 const express = require('express')
 const router = express.Router()
 
 // GET
 router.get('/', getUser)
+router.get('/user', getUserFullData)
 router.delete('/', deleteUser)
 router.patch('/profile', updateUser)
 router.patch('/password', updateUserPassword)

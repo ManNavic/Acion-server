@@ -9,7 +9,6 @@ const getUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
     const userDataToSend = {
-      email: user.email,
       profile: [
         {
           firstName: user.profile[0].firstName,
@@ -25,6 +24,18 @@ const getUser = async (req, res) => {
     }
 
     res.status(200).json(userDataToSend)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+const getUserFullData = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    res.status(200).json(user)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -57,7 +68,7 @@ const updateUserPassword = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-  const { email, profile } = req.body
+  const { profile } = req.body
   const { firstName, lastName, additionalInfo } = profile[0]
   const { birthday, phoneNumber } = additionalInfo[0]
 
@@ -67,8 +78,6 @@ const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-
-    user.email = email
 
     const profiles = user.profile
 
@@ -315,5 +324,6 @@ module.exports = {
   addUserBillingAddress,
   updateBillingAddress,
   deleteUser,
-  updateUserPassword
+  updateUserPassword,
+  getUserFullData
 }
