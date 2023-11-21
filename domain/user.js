@@ -77,11 +77,6 @@ const updateUser = async (req, res) => {
 
   const { firstName, lastName, additionalInfo } = profile[0]
 
-  if (!firstName && !lastName) {
-    return res
-      .status(400)
-      .json({ message: 'First name or last name is required' })
-  }
 
   const { birthday, phoneNumber } =
     additionalInfo && additionalInfo[0] ? additionalInfo[0] : {}
