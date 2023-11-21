@@ -88,24 +88,20 @@ const updateUser = async (req, res) => {
 
     const userProfile = profiles[0]
 
-    // Update firstName and lastName
     userProfile.firstName = firstName
     userProfile.lastName = lastName
 
-    // Check and add/update additional info
     if (additionalInfo) {
       const existingInfo = userProfile.additionalInfo[0]
 
       if (!existingInfo) {
-        // If additional info doesn't exist, create a new one
         const newInfo = {
-          birthday: birthday || null, // Set to null if it's an empty string
+          birthday: birthday,
           phoneNumber
         }
 
         userProfile.additionalInfo.push(newInfo)
       } else {
-        // If additional info exists, update it
         if (birthday !== '') {
           existingInfo.birthday = birthday
         }
@@ -145,7 +141,6 @@ const addUserShippingAddress = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Assuming you want to add the address to the first profile
     const profile = user.profile[0]
     const shippingAddress = user.profile[0].shippingAddress[0]
 
@@ -164,7 +159,6 @@ const addUserShippingAddress = async (req, res) => {
       postCode
     }
 
-    // Add the new address to the profile
     profile.shippingAddress.push(newAddress)
 
     await user.save()
@@ -186,10 +180,8 @@ const updateShippingAddress = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Assuming you want to update the address in the first profile
     const profile = user.profile[0]
-    const address = profile.shippingAddress[0] // Fix: Use profile.shippingAddress instead of user.profile[0].shippingAddress
-
+    const address = profile.shippingAddress[0]
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' })
     }
@@ -202,9 +194,7 @@ const updateShippingAddress = async (req, res) => {
         country,
         postCode
       }
-
-      // Add the new address to the profile
-      profile.shippingAddress.push(newAddress) // Fix: Use profile.shippingAddress instead of profile.billingAddress
+      profile.shippingAddress.push(newAddress)
 
       await user.save()
       return res
@@ -212,7 +202,6 @@ const updateShippingAddress = async (req, res) => {
         .json({ message: 'Shipping address added successfully', user })
     }
 
-    // Update the existing address
     address.street = street
     address.houseNumber = houseNumber
     address.city = city
@@ -239,7 +228,6 @@ const addUserBillingAddress = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Assuming you want to add the address to the first profile
     const profile = user.profile[0]
     const address = user.profile[0].billingAddress[0]
 
@@ -258,7 +246,6 @@ const addUserBillingAddress = async (req, res) => {
       postCode
     }
 
-    // Add the new address to the profile
     profile.billingAddress.push(newAddress)
 
     await user.save()
@@ -280,9 +267,8 @@ const updateBillingAddress = async (req, res) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Assuming you want to update the address in the first profile
     const profile = user.profile[0]
-    const address = profile.billingAddress[0] // Fix: Use profile.billingAddress instead of user.profile[0].billingAddress
+    const address = profile.billingAddress[0]
 
     if (!profile) {
       return res.status(404).json({ message: 'Profile not found' })
@@ -297,7 +283,6 @@ const updateBillingAddress = async (req, res) => {
         postCode
       }
 
-      // Add the new address to the profile
       profile.billingAddress.push(newAddress)
 
       await user.save()

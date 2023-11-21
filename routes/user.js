@@ -12,7 +12,6 @@ const {
 const express = require('express')
 const router = express.Router()
 
-// GET
 router.get('/', getUser)
 router.get('/user', getUserFullData)
 router.delete('/', deleteUser)
