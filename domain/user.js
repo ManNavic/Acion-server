@@ -85,7 +85,12 @@ const updateUser = async (req, res) => {
     if (!profiles || profiles.length === 0) {
       return res.status(404).json({ message: 'Profile not found' })
     }
-
+    if (firstName !== '') {
+      profiles.firstName = firstName
+    }
+    if (lastName !== '') {
+      profiles.lastName = lastName
+    }
     const userProfile = profiles[0]
 
     userProfile.firstName = firstName
