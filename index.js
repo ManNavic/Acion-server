@@ -7,6 +7,8 @@ const app = express()
 const PORT = process.env.PORT || 4000
 app.use(bodyParser.json())
 mongoose.set('strictQuery', false)
+const cors = require('cors')
+app.use(cors())
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI)
@@ -16,10 +18,7 @@ const connectDB = async () => {
     process.exit(1)
   }
 }
-const cors = require('cors')
-app.use(cors())
-// NEW ROUTES
-
+// NEW ROUTES TO TEST
 const productsRouter = require('./routes/products')
 app.use('/products', productsRouter)
 
