@@ -70,8 +70,21 @@ const updateUserPassword = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { profile } = req.body
+
+  if (!profile || profile.length === 0) {
+    return res.status(400).json({ message: 'Invalid request payload' })
+  }
+
   const { firstName, lastName, additionalInfo } = profile[0]
-  const { birthday, phoneNumber } = additionalInfo[0]
+
+  if (!firstName && !lastName) {
+    return res
+      .status(400)
+      .json({ message: 'First name or last name is required' })
+  }
+
+  const { birthday, phoneNumber } =
+    additionalInfo && additionalInfo[0] ? additionalInfo[0] : {}
 
   try {
     const user = await User.findOne({ email: req.user.email })
@@ -85,16 +98,15 @@ const updateUser = async (req, res) => {
     if (!profiles || profiles.length === 0) {
       return res.status(404).json({ message: 'Profile not found' })
     }
-    if (firstName !== '') {
-      profiles.firstName = firstName
-    }
-    if (lastName !== '') {
-      profiles.lastName = lastName
-    }
+
     const userProfile = profiles[0]
 
-    userProfile.firstName = firstName
-    userProfile.lastName = lastName
+    if (firstName !== '') {
+      userProfile.firstName = firstName
+    }
+    if (lastName !== '') {
+      userProfile.lastName = lastName
+    }
 
     if (additionalInfo) {
       const existingInfo = userProfile.additionalInfo[0]
@@ -102,7 +114,7 @@ const updateUser = async (req, res) => {
       if (!existingInfo) {
         const newInfo = {
           birthday: birthday,
-          phoneNumber
+          phoneNumber: phoneNumber
         }
 
         userProfile.additionalInfo.push(newInfo)
